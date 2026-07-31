@@ -1,0 +1,7 @@
+{
+  "name": "fixture-js-app",
+  "private": true,
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

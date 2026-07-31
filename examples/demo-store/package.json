@@ -1,0 +1,11 @@
+{
+  "name": "demo-store",
+  "private": true,
+  "description": "Minimal in-memory Express store used to demo ahaft.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

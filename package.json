@@ -1,0 +1,58 @@
+{
+  "name": "ahaft",
+  "version": "0.1.0",
+  "description": "Give existing software a handle AI agents can grip: a curated, permission-scoped, MCP-compatible tool layer generated from your codebase.",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai-agents",
+    "express",
+    "cli"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahaft/ahaft.git"
+  },
+  "homepage": "https://ahaft.dev",
+  "bugs": {
+    "url": "https://github.com/ahaft/ahaft/issues"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "ahaft": "dist/cli/index.js"
+  },
+  "main": "dist/cli/index.js",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run build && npm run typecheck && vitest run",
+    "typecheck": "tsc --noEmit",
+    "pretest": "npm run build",
+    "test": "vitest run",
+    "demo": "node examples/demo-store/server.js"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.25.0",
+    "@modelcontextprotocol/sdk": "^1.11.0",
+    "commander": "^12.1.0",
+    "yaml": "^2.5.0",
+    "zod": "^3.23.8"
+  },
+  "overrides": {
+    "rollup": "npm:@rollup/wasm-node@^4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.0",
+    "express": "^4.19.2",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5"
+  }
+}
