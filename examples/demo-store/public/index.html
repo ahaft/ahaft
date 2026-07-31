@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>demo-store</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --ink: #1a1d21; --muted: #6b7280;
+    --accent: #b45309; --line: #e5e7eb; --badge: #fef3c7; --badge-ink: #92400e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111418; --card: #1b1f24; --ink: #e7e9ec; --muted: #9aa1ab;
+      --accent: #f59e0b; --line: #2a2f36; --badge: #3a2e14; --badge-ink: #fbbf24;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    background: var(--bg); color: var(--ink); min-height: 100vh;
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+    display: flex; flex-direction: column; align-items: center; padding: 3rem 1.25rem;
+  }
+  header { text-align: center; margin-bottom: 2.25rem; }
+  h1 { font-size: 1.9rem; letter-spacing: -0.02em; }
+  h1 .ax { color: var(--accent); }
+  header p { color: var(--muted); margin-top: 0.35rem; }
+  .controls { margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: center; }
+  .controls label { color: var(--muted); font-size: 0.9rem; display: flex; gap: 0.45rem; align-items: center; cursor: pointer; }
+  main { width: 100%; max-width: 720px; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 1.25rem 1.25rem 1.1rem; box-shadow: 0 1px 3px rgb(0 0 0 / 0.06);
+    display: flex; flex-direction: column; gap: 0.4rem;
+  }
+  .card .icon { font-size: 1.9rem; }
+  .card .name { font-weight: 600; font-size: 1.05rem; }
+  .card .price { color: var(--accent); font-variant-numeric: tabular-nums; font-weight: 600; }
+  .badge {
+    align-self: flex-start; margin-top: 0.3rem; background: var(--badge); color: var(--badge-ink);
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase;
+    padding: 0.15rem 0.5rem; border-radius: 999px;
+  }
+  .empty { grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 2rem 0; }
+  footer { margin-top: 2.5rem; color: var(--muted); font-size: 0.85rem; text-align: center; max-width: 34rem; }
+  footer code { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 0.1rem 0.4rem; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>demo-store <span class="ax">/</span> ahaft</h1>
+  <p>An in-memory shop for agents to grip. Restart the server to reset.</p>
+</header>
+<div class="controls">
+  <label><input type="checkbox" id="includeHidden"> show hidden products</label>
+</div>
+<main id="grid"><p class="empty">loading…</p></main>
+<footer>
+  Data changes when an agent (or curl) calls the API — try asking an agent connected through
+  <code>ahaft serve</code> to “hide the cheapest product”, then refresh.
+</footer>
+<script>
+  const ICONS = { hammer: "🔨", screwdriver: "🪛", wrench: "🔧" };
+  const grid = document.getElementById("grid");
+  const toggle = document.getElementById("includeHidden");
+
+  async function load() {
+    const qs = toggle.checked ? "?includeHidden=true" : "";
+    const res = await fetch("/products" + qs);
+    const products = await res.json();
+    grid.innerHTML = "";
+    if (products.length === 0) {
+      grid.innerHTML = '<p class="empty">no products — an agent has been busy</p>';
+      return;
+    }
+    for (const p of products) {
+      const card = document.createElement("div");
+      card.className = "card";
+      const icon = ICONS[p.name.toLowerCase()] ?? "📦";
+      card.innerHTML =
+        '<div class="icon">' + icon + "</div>" +
+        '<div class="name"></div>' +
+        '<div class="price">$' + Number(p.price).toFixed(2) + "</div>" +
+        (p.hidden ? '<span class="badge">hidden</span>' : "");
+      card.querySelector(".name").textContent = p.name;
+      grid.appendChild(card);
+    }
+  }
+  toggle.addEventListener("change", load);
+  load();
+</script>
+</body>
+</html>

@@ -29,6 +29,8 @@ npm run demo
 # demo-store listening on http://localhost:3000
 ```
 
+Open that URL in a browser to see the storefront. It renders whatever the API currently holds, so you can watch an agent's changes land — the page itself is static UI and correctly does not become a tool in the manifest.
+
 **2. Generate the manifest:**
 
 ```bash

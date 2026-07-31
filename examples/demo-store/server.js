@@ -1,9 +1,13 @@
 // demo-store: a deliberately tiny Express app for trying out ahaft.
 // All data lives in memory — restart to reset.
 const express = require("express");
+const path = require("node:path");
 
 const app = express();
 app.use(express.json());
+// Storefront page at / — static, so it's UI rather than an API capability
+// and `ahaft init` correctly leaves it out of the manifest.
+app.use(express.static(path.join(__dirname, "public")));
 
 let nextId = 4;
 const products = [
